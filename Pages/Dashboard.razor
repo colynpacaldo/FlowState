@@ -1,0 +1,57 @@
+@page "/"
+@inject GameState G
+<header class="hud">
+    <div class="row between"><span class="lbl">ENERGY RESERVE</span><span class="big gold">@G.Energy <small>/ @GameState.MaxEnergy</small></span></div>
+    <div class="bar energy"><i style="width:@(G.Energy * 100 / GameState.MaxEnergy)%"></i></div>
+    <div class="row between sub sm"><span>@(G.CrashActive ? "Regen halved" : "Regen active")</span><span>+1 in @G.RegenText</span></div>
+    <div class="row xprow">
+        <div class="lvl"><small>LVL</small><b>@G.Level</b></div>
+        <div class="grow"><div class="row between lbl"><span>EXPERIENCE</span><span class="mono">@G.Exp / @GameState.ExpNeeded EXP</span></div>
+            <div class="bar thin"><i style="width:@(G.Exp * 100 / GameState.ExpNeeded)%"></i></div>
+            <span class="sub sm">@(GameState.ExpNeeded - G.Exp) EXP to level @(G.Level + 1)</span></div>
+        <div class="bal"><small>BALANCE</small><b class="gold">◈ @G.Gold.ToString("N0")</b></div>
+    </div>
+</header>
+<div class="dash">
+  <div>
+    <div class="row between"><h2>ACTIVE MISSIONS</h2><a class="btn ghost" href="new">+ NEW MISSION</a></div>
+    <h3 class="sect">DAILY MISSIONS</h3>
+    @foreach (var m in G.Missions.Where(x => !x.Heavy))
+    {
+        <div class="mrow @m.Cat.ToString().ToLower() @(m.Claimed ? "done" : "")">
+            <span class="chip @m.Cat.ToString().ToLower()">@m.Cat.ToString().ToUpper()</span>
+            <span class="grow name">@m.Name</span>
+            <span class="mono st"><em>⚡</em> @m.Cost</span><span class="mono st">+@m.Exp EXP</span><span class="mono st">+◈@m.Gold</span>
+            @if (m.Claimed) { <span class="mono st">✓ CLAIMED</span> }
+            else { <button class="btn sm" disabled="@(!G.CanClaim(m))" @onclick="() => G.Claim(m)">CLAIM</button> }
+        </div>
+    }
+    <h3 class="sect">HEAVY QUESTS</h3>
+    <div class="quests">
+    @foreach (var m in G.Missions.Where(x => x.Heavy))
+    {
+        <div class="quest @m.Cat.ToString().ToLower()">
+            <div class="row between"><span class="chip @m.Cat.ToString().ToLower()">@m.Cat.ToString().ToUpper()</span><span class="lbl">HEAVY QUEST</span></div>
+            <h4>@m.Name.ToUpper()</h4>
+            <div class="row end">
+                <div><small class="lbl">COST</small><b class="q gold"><em>⚡</em> @m.Cost</b></div>
+                <div><small class="lbl">REWARD</small><b class="q">+@m.Exp EXP</b></div>
+                <div><small class="lbl">GOLD</small><b class="q">◈@m.Gold</b></div>
+                <button class="btn" disabled="@(!G.CanClaim(m))" @onclick="() => G.Claim(m)">CLAIM</button>
+            </div>
+        </div>
+    }
+    </div>
+  </div>
+  <aside>
+    <h3 class="sect">CONSUMABLES</h3>
+    @foreach (var c in G.Items)
+    {
+        <div class="card cons"><div class="row between"><b>@c.Name</b><span class="qty">×@c.Qty</span></div>
+            <span class="gold sm">+@c.Energy <em>⚡</em></span>
+            <p class="sub sm">@c.Desc</p>
+            @if (c.Risk != null) { <p class="risk sm">⚠ Halves regen rate for 4 hours after use.</p> }
+            <button class="btn ghost wide" disabled="@(c.Qty < 1)" @onclick="() => G.Use(c)">USE</button></div>
+    }
+  </aside>
+</div>

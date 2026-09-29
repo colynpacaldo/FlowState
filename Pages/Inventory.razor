@@ -1,0 +1,19 @@
+@page "/inventory"
+@inject GameState G
+<div class="page narrow">
+    <h1>INVENTORY</h1><p class="sub">Consumables and active effects.</p>
+    <h3 class="sect">ACTIVE EFFECTS</h3>
+    <div class="card">@(G.CrashActive ? $"Caffeine crash — regen halved until {G.CrashUntil:t}." : "No active effects.")</div>
+    <h3 class="sect">CONSUMABLES</h3>
+    @foreach (var c in G.Items)
+    {
+        <div class="card row between top">
+            <div><div class="row gap"><h4>@c.Name.ToUpper()</h4><span class="qty">×@c.Qty</span></div>
+                <p class="sub">@c.Desc</p>
+                <div class="row gap"><span class="tagg">+@c.Energy <em>⚡</em></span>
+                @if (c.Risk != null) { <span class="tagr sm">⚠ Halves regen rate for 4 hours after use.</span> }</div>
+                @if (c.Risk != null) { <p class="riskbox sm"><b>Risk:</b> @c.Risk</p> }</div>
+            <button class="btn ghost @(c.Risk != null ? "danger" : "")" disabled="@(c.Qty < 1)" @onclick="() => G.Use(c)">USE</button>
+        </div>
+    }
+</div>

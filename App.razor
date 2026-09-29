@@ -1,0 +1,4 @@
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="r"><RouteView RouteData="@r" DefaultLayout="@typeof(MainLayout)" /></Found>
+    <NotFound><LayoutView Layout="@typeof(MainLayout)"><p class="sub">Nothing here.</p></LayoutView></NotFound>
+</Router>

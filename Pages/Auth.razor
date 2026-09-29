@@ -1,0 +1,35 @@
+@page "/login"
+@page "/register"
+@layout BlankLayout
+@inject NavigationManager Nav
+<div class="auth">
+    <section class="auth-l">
+        <h1 class="logo">FLOW<span>STATE</span></h1>
+        <p class="tag">Spend energy. Earn your time back.</p>
+        <div class="hex"><div class="hex-in"><b>@(Reg ? "1" : "")</b>@(Reg ? "LVL" : "")</div></div>
+        <div class="xp @(Reg ? "seg" : "")"><i style="width:@(Reg ? 100 : 40)%"></i></div>
+        <p class="mono cap">@(Reg ? "240 / 240 · FULL" : "LVL 1 · 0 / 100 EXP")</p>
+        @if (Reg) { <p class="note">You'll start at <b>Level 1</b> with full energy — 240/240.</p> }
+    </section>
+    <section class="auth-r">
+        <div class="auth-form">
+            <h2>@(Reg ? "CREATE ACCOUNT" : "SIGN IN")</h2>
+            <p class="sub">@(Reg ? "Begin your mission log." : "Welcome back, Operator.")</p>
+            @if (Reg) { <label>USERNAME<input placeholder="commander_rex" /></label> }
+            <label>EMAIL<input type="email" placeholder="your@email.com" /></label>
+            <label>PASSWORD
+                <span class="pw"><input type="@(show ? "text" : "password")" value="password1" />
+                <button type="button" class="eye" @onclick="() => show = !show">@(show ? "◉" : "◎")</button></span>
+            </label>
+            @if (Reg) { <label>CONFIRM PASSWORD<input type="password" value="password1" /></label> }
+            <button class="btn wide" @onclick='() => Nav.NavigateTo("")'>@(Reg ? "CREATE ACCOUNT" : "SIGN IN")</button>
+            @if (!Reg) { <p class="ctr"><a class="ul" href="login">Forgot password?</a></p>
+                <p class="ctr sub">New here? <a class="gold" href="register">Create an account</a></p> }
+            else { <p class="ctr sub">Already have an account? <a class="gold" href="login">Sign in</a></p> }
+        </div>
+    </section>
+</div>
+@code {
+    bool show;
+    bool Reg => Nav.Uri.EndsWith("/register");
+}

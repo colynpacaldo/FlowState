@@ -1,0 +1,16 @@
+@page "/shop"
+@inject GameState G
+<div class="page">
+    <div class="row between"><div><h1>REWARD SHOP</h1><p class="sub">Redeem your earnings for real-life rewards.</p></div>
+        <div class="card bal"><small>BALANCE</small><b class="gold">◈ @G.Gold.ToString("N0")</b></div></div>
+    <div class="shop">
+    @foreach (var s in G.Shop)
+    {
+        var ok = G.Gold >= s.Price;
+        <div class="card item"><span class="ico">@s.Icon</span><h4>@s.Name.ToUpper()</h4><p class="sub sm">@s.Desc</p>
+            <div class="row between"><b class="q @(ok ? "gold" : "muted")">◈ @s.Price.ToString("N0")</b>
+                @if (!ok) { <span class="risk-t sm">Need @(s.Price - G.Gold) more</span> }</div>
+            <button class="btn wide" disabled="@(!ok)" @onclick="() => G.Redeem(s)">REDEEM</button></div>
+    }
+    </div>
+</div>

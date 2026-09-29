@@ -1,0 +1,38 @@
+@page "/new"
+@inject GameState G
+@inject NavigationManager Nav
+<div class="page nm">
+    <div class="row gap"><a class="btn ghost sm" href="">← Back</a><div><h1>NEW MISSION</h1><p class="sub">Define your next objective.</p></div></div>
+    <div class="nm-grid">
+        <div>
+            <label>MISSION NAME<input @bind="name" @bind:event="oninput" placeholder="Describe the task clearly..." /></label>
+            <span class="lbl">CATEGORY</span>
+            <div class="seg-row">@foreach (var c in Enum.GetValues<Cat>()) { var cc = c;
+                <button class="opt @cc.ToString().ToLower() @(cat == cc ? "on" : "")" @onclick="() => cat = cc">@cc.ToString().ToUpper()</button> }</div>
+            <span class="lbl">MISSION TYPE</span>
+            <div class="seg-row two">
+                <button class="opt gold @(!heavy ? "on" : "")" @onclick="() => heavy = false">DAILY MISSION</button>
+                <button class="opt gold @(heavy ? "on" : "")" @onclick="() => heavy = true">HEAVY QUEST</button></div>
+            <p class="sub sm">@(heavy ? "One-off big objectives. Higher cost, higher reward." : "Recurring daily tasks. Lower cost, lower reward.")</p>
+            <div class="row between"><span class="lbl">ENERGY COST</span><b class="gold"><em>⚡</em> @cost</b></div>
+            <div class="costs">@for (var v = 10; v <= 80; v += 10) { var x = v; <button class="cost @(cost == x ? "on" : "")" @onclick="() => cost = x">@x</button> }</div>
+            <p class="sub sm">Higher cost = more effort = greater reward.</p>
+            <button class="btn wide" disabled="@(string.IsNullOrWhiteSpace(name))" @onclick="Create">CREATE MISSION</button>
+        </div>
+        <div>
+            <span class="lbl">PREVIEW</span>
+            <div class="mrow @cat.ToString().ToLower()"><span class="chip @cat.ToString().ToLower()">@cat.ToString().ToUpper()</span>
+                <span class="grow name"><i>@(string.IsNullOrWhiteSpace(name) ? "Mission name..." : name)</i></span>
+                <span class="mono st"><em>⚡</em> @cost</span><span class="mono st">+@Prev.Exp EXP</span><span class="btn sm">CLAIM</span></div>
+            <div class="card"><span class="lbl">PROJECTED REWARDS</span>
+                <div class="row between"><div><small class="sub">EXP</small><b class="q">+@Prev.Exp</b></div>
+                <div><small class="sub">Gold</small><b class="q">+◈@Prev.Gold</b></div>
+                <div><small class="sub">Energy Cost</small><b class="q gold">- <em>⚡</em> @cost</b></div></div></div>
+        </div>
+    </div>
+</div>
+@code {
+    string name = ""; Cat cat; bool heavy; int cost = 30;
+    Mission Prev => new() { Cost = cost, Heavy = heavy };
+    void Create() { G.Add(new Mission { Name = name.Trim(), Cat = cat, Heavy = heavy, Cost = cost }); Nav.NavigateTo(""); }
+}

@@ -1,0 +1,28 @@
+@inherits LayoutComponentBase
+@inject GameState G
+@implements IDisposable
+<div class="shell">
+    <aside class="side">
+        <div class="brand">FLOW<span>STATE</span><small>TASK MANAGER</small></div>
+        <nav>
+            <NavLink href="" Match="NavLinkMatch.All"><i>▦</i>Dashboard</NavLink>
+            <NavLink href="new"><i>＋</i>New Mission</NavLink>
+            <NavLink href="shop"><i>◈</i>Shop</NavLink>
+            <NavLink href="inventory"><i>▤</i>Inventory</NavLink>
+            <NavLink href="missions"><i>≡</i>Missions</NavLink>
+        </nav>
+    </aside>
+    <main class="main">@Body</main>
+    <nav class="bottom">
+        <NavLink href="" Match="NavLinkMatch.All"><i>▦</i>Dashboard</NavLink>
+        <NavLink href="new"><i>＋</i>New</NavLink>
+        <NavLink href="shop"><i>◈</i>Shop</NavLink>
+        <NavLink href="inventory"><i>▤</i>Inventory</NavLink>
+        <NavLink href="missions"><i>≡</i>Missions</NavLink>
+    </nav>
+</div>
+@code {
+    protected override void OnInitialized() => G.Changed += Refresh;
+    void Refresh() => InvokeAsync(StateHasChanged);
+    public void Dispose() => G.Changed -= Refresh;
+}
