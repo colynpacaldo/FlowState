@@ -1020,9 +1020,6 @@ C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\heyp9v7z5w-{0}-t
 C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\jrm6yp806s-{0}-tptq2av103-tptq2av103.gz
 C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\19p5bo33dl-{0}-lfu7j35m59-lfu7j35m59.gz
 C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\3s0ztqu6uf-{0}-oyz0vx2fzb-oyz0vx2fzb.gz
-C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\vtndd7su49-{0}-1m7ehl2jhx-1m7ehl2jhx.gz
-C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\06cgzr02pm-{0}-ki4unbbmiq-ki4unbbmiq.gz
-C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\s01ewbmh3a-{0}-e69b0z0q66-e69b0z0q66.gz
 C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\staticwebassets.build.json.cache
 C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\staticwebassets.development.json
@@ -1033,3 +1030,7 @@ C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\FlowState.dll
 C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\refint\FlowState.dll
 C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\FlowState.pdb
 C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\ref\FlowState.dll
+C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\FlowState.sourcelink.json
+C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\vtndd7su49-{0}-jkjwh9os5p-jkjwh9os5p.gz
+C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\06cgzr02pm-{0}-99b973665j-99b973665j.gz
+C:\Users\Lenovo\Documents\FlowState\obj\Debug\net8.0\compressed\s01ewbmh3a-{0}-og0qnuwsfq-og0qnuwsfq.gz

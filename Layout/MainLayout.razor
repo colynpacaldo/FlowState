@@ -1,6 +1,10 @@
 @inherits LayoutComponentBase
 @inject GameState G
+@inject AuthService Auth
+@inject NavigationManager Nav
 @implements IDisposable
+@if (ready)
+{
 <div class="shell">
     <aside class="side">
         <div class="brand">FLOW<span>STATE</span><small>TASK MANAGER</small></div>
@@ -11,6 +15,11 @@
             <NavLink href="inventory"><i>▤</i>Inventory</NavLink>
             <NavLink href="missions"><i>≡</i>Missions</NavLink>
         </nav>
+        @if (Auth.Current is { } u)
+        {
+            <div class="user"><span class="lbl">OPERATOR</span><b>@u.Username</b>
+                <button type="button" class="btn ghost sm" @onclick="SignOut">SIGN OUT</button></div>
+        }
     </aside>
     <main class="main">@Body</main>
     <nav class="bottom">
@@ -21,8 +30,26 @@
         <NavLink href="missions"><i>≡</i>Missions</NavLink>
     </nav>
 </div>
+}
 @code {
-    protected override void OnInitialized() => G.Changed += Refresh;
+    bool ready;
+
+    protected override async Task OnInitializedAsync()
+    {
+        G.Changed += Refresh;
+        Auth.Changed += Refresh;
+        await Auth.InitAsync();
+        if (!Auth.IsSignedIn) { Nav.NavigateTo("login", replace: true); return; }
+        ready = true;
+    }
+
+    async Task SignOut()
+    {
+        await Auth.SignOutAsync();
+        ready = false;
+        Nav.NavigateTo("login", replace: true);
+    }
+
     void Refresh() => InvokeAsync(StateHasChanged);
-    public void Dispose() => G.Changed -= Refresh;
+    public void Dispose() { G.Changed -= Refresh; Auth.Changed -= Refresh; }
 }

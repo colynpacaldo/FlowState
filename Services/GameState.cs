@@ -57,6 +57,14 @@ public class GameState : IDisposable
         if (Energy < MaxEnergy && --RegenLeft <= 0) { Energy++; RegenLeft = RegenSeconds * (CrashActive ? 2 : 1); }
         Changed?.Invoke();
     }
+    /// <summary>Resets progress for a brand-new account: Level 1, full energy, no gold, no missions.</summary>
+    public void StartFresh()
+    {
+        Level = 1; Exp = 0; Energy = MaxEnergy; Gold = 0; RegenLeft = RegenSeconds;
+        CrashUntil = null; Missions.Clear();
+        foreach (var c in Items) c.Qty = 0;
+        Changed?.Invoke();
+    }
     public string RegenText => $"{RegenLeft / 60}:{RegenLeft % 60:00}";
 
     public bool CanClaim(Mission m) => !m.Claimed && Energy >= m.Cost;
@@ -67,7 +75,7 @@ public class GameState : IDisposable
         while (Exp >= ExpNeeded) { Exp -= ExpNeeded; Level++; }
         Changed?.Invoke();
     }
-    public void Add(Mission m) { m.Id = Missions.Max(x => x.Id) + 1; Missions.Add(m); Changed?.Invoke(); }
+    public void Add(Mission m) { m.Id = Missions.Select(x => x.Id).DefaultIfEmpty(0).Max() + 1; Missions.Add(m); Changed?.Invoke(); }
     public void Remove(Mission m) { Missions.Remove(m); Changed?.Invoke(); }
     public void Redeem(ShopItem s) { if (Gold >= s.Price) { Gold -= s.Price; Changed?.Invoke(); } }
     public void Use(Consumable c)

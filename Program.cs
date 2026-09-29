@@ -6,4 +6,5 @@ var b = WebAssemblyHostBuilder.CreateDefault(args);
 b.RootComponents.Add<App>("#app");
 b.RootComponents.Add<HeadOutlet>("head::after");
 b.Services.AddSingleton<GameState>();
+b.Services.AddSingleton<AuthService>();
 await b.Build().RunAsync();

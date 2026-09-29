@@ -1,0 +1,482 @@
+diff --git a/Layout/MainLayout.razor b/Layout/MainLayout.razor
+index 00fe045..fd850e3 100644
+--- a/Layout/MainLayout.razor
++++ b/Layout/MainLayout.razor
+@@ -1,6 +1,10 @@
+ @inherits LayoutComponentBase
+ @inject GameState G
++@inject AuthService Auth
++@inject NavigationManager Nav
+ @implements IDisposable
++@if (ready)
++{
+ <div class="shell">
+     <aside class="side">
+         <div class="brand">FLOW<span>STATE</span><small>TASK MANAGER</small></div>
+@@ -11,6 +15,11 @@
+             <NavLink href="inventory"><i>▤</i>Inventory</NavLink>
+             <NavLink href="missions"><i>≡</i>Missions</NavLink>
+         </nav>
++        @if (Auth.Current is { } u)
++        {
++            <div class="user"><span class="lbl">OPERATOR</span><b>@u.Username</b>
++                <button type="button" class="btn ghost sm" @onclick="SignOut">SIGN OUT</button></div>
++        }
+     </aside>
+     <main class="main">@Body</main>
+     <nav class="bottom">
+@@ -21,8 +30,26 @@
+         <NavLink href="missions"><i>≡</i>Missions</NavLink>
+     </nav>
+ </div>
++}
+ @code {
+-    protected override void OnInitialized() => G.Changed += Refresh;
++    bool ready;
++
++    protected override async Task OnInitializedAsync()
++    {
++        G.Changed += Refresh;
++        Auth.Changed += Refresh;
++        await Auth.InitAsync();
++        if (!Auth.IsSignedIn) { Nav.NavigateTo("login", replace: true); return; }
++        ready = true;
++    }
++
++    async Task SignOut()
++    {
++        await Auth.SignOutAsync();
++        ready = false;
++        Nav.NavigateTo("login", replace: true);
++    }
++
+     void Refresh() => InvokeAsync(StateHasChanged);
+-    public void Dispose() => G.Changed -= Refresh;
++    public void Dispose() { G.Changed -= Refresh; Auth.Changed -= Refresh; }
+ }
+diff --git a/Pages/Auth.razor b/Pages/Auth.razor
+index ad7c289..d052221 100644
+--- a/Pages/Auth.razor
++++ b/Pages/Auth.razor
+@@ -1,35 +1,191 @@
+ @page "/login"
+ @page "/register"
+ @layout BlankLayout
++@using System.Globalization
+ @inject NavigationManager Nav
++@inject AuthService Accounts
++@inject GameState G
++@implements IDisposable
++<PageTitle>@(Reg ? "Create account" : "Sign in") · FlowState</PageTitle>
+ <div class="auth">
+     <section class="auth-l">
+         <h1 class="logo">FLOW<span>STATE</span></h1>
+         <p class="tag">Spend energy. Earn your time back.</p>
+-        <div class="hex"><div class="hex-in"><b>@(Reg ? "1" : "")</b>@(Reg ? "LVL" : "")</div></div>
+-        <div class="xp @(Reg ? "seg" : "")"><i style="width:@(Reg ? 100 : 40)%"></i></div>
++
++        <svg class="art" viewBox="0 0 300 240" role="img" aria-hidden="true">
++            <polygon points="@Hex(98)" fill="none" stroke="var(--line)" stroke-width="1.2" />
++            @if (Reg)
++            {
++                <polygon points="@Hex(76)" fill="none" stroke="var(--gold-d)" stroke-width="1.6" />
++                <circle cx="150" cy="105" r="36" fill="none" stroke="var(--line)" stroke-width="1.2" />
++                @LevelBadge
++            }
++            else
++            {
++                <polygon points="@Hex(76)" fill="none" stroke="var(--gold-d)" stroke-width="1.6" />
++                <polygon points="@Hex(46)" fill="none" stroke="var(--gold-d)" stroke-width="1.2" />
++                <g stroke="var(--gold-d)" stroke-width="1.2">
++                    <line x1="150" y1="105" x2="150" y2="66" />
++                    <line x1="150" y1="105" x2="184" y2="125" />
++                    <line x1="150" y1="105" x2="116" y2="125" />
++                </g>
++                <circle cx="150" cy="105" r="9" fill="var(--bg2)" stroke="var(--gold)" stroke-width="2.5" />
++                <circle cx="150" cy="105" r="2.5" fill="var(--gold)" />
++                <g stroke="var(--line)" stroke-width="1.2">
++                    <line x1="100" y1="216" x2="200" y2="216" />
++                    <line x1="112" y1="212" x2="112" y2="220" /><line x1="125" y1="212" x2="125" y2="220" />
++                    <line x1="138" y1="212" x2="138" y2="220" /><line x1="162" y1="212" x2="162" y2="220" />
++                    <line x1="175" y1="212" x2="175" y2="220" /><line x1="188" y1="212" x2="188" y2="220" />
++                    <line x1="20" y1="224" x2="40" y2="224" /><line x1="30" y1="214" x2="30" y2="234" />
++                    <line x1="260" y1="224" x2="280" y2="224" /><line x1="270" y1="214" x2="270" y2="234" />
++                </g>
++                <line x1="128" y1="216" x2="176" y2="216" stroke="var(--gold)" stroke-width="2.5" />
++            }
++        </svg>
++
++        <div class="xp @(Reg ? "seg" : "")"><i style="width:@(Reg ? 100 : 65)%"></i></div>
+         <p class="mono cap">@(Reg ? "240 / 240 · FULL" : "LVL 1 · 0 / 100 EXP")</p>
+         @if (Reg) { <p class="note">You'll start at <b>Level 1</b> with full energy — 240/240.</p> }
+     </section>
++
+     <section class="auth-r">
+-        <div class="auth-form">
++        <form class="auth-form" @onsubmit="Submit" novalidate>
+             <h2>@(Reg ? "CREATE ACCOUNT" : "SIGN IN")</h2>
+             <p class="sub">@(Reg ? "Begin your mission log." : "Welcome back, Operator.")</p>
+-            @if (Reg) { <label>USERNAME<input placeholder="commander_rex" /></label> }
+-            <label>EMAIL<input type="email" placeholder="your@email.com" /></label>
++
++            @if (Reg)
++            {
++                <label>USERNAME
++                    <input @bind="username" @bind:event="oninput" @onblur='() => Touch("u")' placeholder="commander_rex"
++                           autocomplete="username" maxlength="20" aria-invalid="@(Inv(Err("u", AuthRules.Username(username)) is not null))" />
++                    @if (Err("u", AuthRules.Username(username)) is string mu) { <small class="err">@mu</small> }
++                </label>
++            }
++
++            <label>EMAIL
++                <input type="email" @bind="email" @bind:event="oninput" @onblur='() => Touch("e")' placeholder="your@email.com"
++                       autocomplete="email" aria-invalid="@(Inv(Reg && Err("e", AuthRules.Email(email)) is not null))" />
++                @if (Reg && Err("e", AuthRules.Email(email)) is string me) { <small class="err">@me</small> }
++            </label>
++
+             <label>PASSWORD
+-                <span class="pw"><input type="@(show ? "text" : "password")" value="password1" />
+-                <button type="button" class="eye" @onclick="() => show = !show">@(show ? "◉" : "◎")</button></span>
++                <span class="pw">
++                    <input type="@(show ? "text" : "password")" @bind="password" @bind:event="oninput" @onblur='() => Touch("p")'
++                           autocomplete="@(Reg ? "new-password" : "current-password")"
++                           aria-invalid="@(Inv(Reg && Err("p", AuthRules.Password(password)) is not null))" />
++                    <button type="button" class="eye" @onclick="() => show = !show"
++                            aria-label="@(show ? "Hide password" : "Show password")" aria-pressed="@(show ? "true" : "false")">
++                        @if (show)
++                        {
++                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
++                        }
++                        else
++                        {
++                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.9 5.2A10.5 10.5 0 0 1 12 5c6.4 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6A16.6 16.6 0 0 0 2 12s3.6 7 10 7a9.8 9.8 0 0 0 5.4-1.6" /><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" /><path d="m3 3 18 18" /></svg>
++                        }
++                    </button>
++                </span>
++                @if (Reg)
++                {
++                    @if (Err("p", AuthRules.Password(password)) is string mp) { <small class="err">@mp</small> }
++                    else { <small class="hint">At least @AuthRules.MinPassword characters.</small> }
++                }
+             </label>
+-            @if (Reg) { <label>CONFIRM PASSWORD<input type="password" value="password1" /></label> }
+-            <button class="btn wide" @onclick='() => Nav.NavigateTo("")'>@(Reg ? "CREATE ACCOUNT" : "SIGN IN")</button>
+-            @if (!Reg) { <p class="ctr"><a class="ul" href="login">Forgot password?</a></p>
+-                <p class="ctr sub">New here? <a class="gold" href="register">Create an account</a></p> }
+-            else { <p class="ctr sub">Already have an account? <a class="gold" href="login">Sign in</a></p> }
+-        </div>
++
++            @if (Reg)
++            {
++                <label>CONFIRM PASSWORD
++                    <input type="password" @bind="confirm" @bind:event="oninput" @onblur='() => Touch("c")'
++                           autocomplete="new-password" aria-invalid="@(Inv(Err("c", AuthRules.Confirm(password, confirm)) is not null))" />
++                    @if (Err("c", AuthRules.Confirm(password, confirm)) is string mc) { <small class="err">@mc</small> }
++                </label>
++            }
++
++            @if (error is not null) { <p class="auth-err" role="alert">@error</p> }
++
++            <button type="submit" class="btn wide" disabled="@(!Valid || busy)">
++                @(busy ? "PLEASE WAIT…" : Reg ? "CREATE ACCOUNT" : "SIGN IN")
++            </button>
++
++            @if (!Reg)
++            {
++                <p class="ctr"><button type="button" class="ul linkbtn" @onclick="() => forgot = !forgot">Forgot password?</button></p>
++                @if (forgot)
++                {
++                    <p class="ctr sub sm" role="status">Password reset isn't available yet — accounts are stored only in this browser.</p>
++                }
++                <p class="ctr sub">New here? <a class="gold" href="register">Create an account</a></p>
++            }
++            else
++            {
++                <p class="ctr sub">Already have an account? <a class="gold" href="login">Sign in</a></p>
++            }
++        </form>
+     </section>
+ </div>
+ @code {
+-    bool show;
+-    bool Reg => Nav.Uri.EndsWith("/register");
++    string username = "", email = "", password = "", confirm = "";
++    string? error;
++    bool show, busy, forgot;
++    readonly HashSet<string> touched = new();
++
++    bool Reg => new Uri(Nav.Uri).AbsolutePath.TrimEnd('/').EndsWith("/register", StringComparison.OrdinalIgnoreCase);
++
++    bool Valid => Reg
++        ? AuthRules.Username(username) is null && AuthRules.Email(email) is null
++          && AuthRules.Password(password) is null && AuthRules.Confirm(password, confirm) is null
++        : AuthRules.Email(email) is null && password.Length > 0;
++
++    // Razor reserves the <text> tag, so SVG <text> elements are emitted as raw markup.
++    static readonly MarkupString LevelBadge = new(
++        "<text x=\"150\" y=\"118\" text-anchor=\"middle\" fill=\"var(--gold)\" style=\"font:700 40px var(--head)\">1</text>" +
++        "<text x=\"150\" y=\"134\" text-anchor=\"middle\" fill=\"var(--muted)\" style=\"font:500 10px var(--body);letter-spacing:.1em\">LVL</text>");
++
++    static string? Inv(bool invalid) => invalid ? "true" : null;
++    void Touch(string k) => touched.Add(k);
++    string? Err(string k, string? err) => touched.Contains(k) ? err : null;
++
++    protected override async Task OnInitializedAsync()
++    {
++        Nav.LocationChanged += OnLocationChanged;
++        await Accounts.InitAsync();
++        if (Accounts.IsSignedIn) Nav.NavigateTo("", replace: true);
++    }
++
++    // /login and /register share this component instance, so clear the form when switching.
++    void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
++    {
++        username = email = password = confirm = "";
++        error = null; show = forgot = false; touched.Clear();
++        InvokeAsync(StateHasChanged);
++    }
++
++    async Task Submit()
++    {
++        touched.UnionWith(new[] { "u", "e", "p", "c" });
++        if (busy || !Valid) return;
++        busy = true; error = null;
++        try
++        {
++            var result = Reg
++                ? await Accounts.RegisterAsync(username, email, password, confirm)
++                : await Accounts.SignInAsync(email, password);
++            if (result.Ok)
++            {
++                if (Reg) G.StartFresh();
++                Nav.NavigateTo("");
++            }
++            else error = result.Error;
++        }
++        finally { busy = false; }
++    }
++
++    static string Hex(double r, double cx = 150, double cy = 105) => string.Join(" ",
++        Enumerable.Range(0, 6).Select(i =>
++        {
++            var a = Math.PI / 180 * (60 * i - 90);
++            return string.Create(CultureInfo.InvariantCulture, $"{cx + r * Math.Cos(a):0.##},{cy + r * Math.Sin(a):0.##}");
++        }));
++
++    public void Dispose() => Nav.LocationChanged -= OnLocationChanged;
+ }
+diff --git a/Program.cs b/Program.cs
+index 8a78343..ad7a36d 100644
+--- a/Program.cs
++++ b/Program.cs
+@@ -6,4 +6,5 @@ var b = WebAssemblyHostBuilder.CreateDefault(args);
+ b.RootComponents.Add<App>("#app");
+ b.RootComponents.Add<HeadOutlet>("head::after");
+ b.Services.AddSingleton<GameState>();
++b.Services.AddSingleton<AuthService>();
+ await b.Build().RunAsync();
+diff --git a/Services/AuthService.cs b/Services/AuthService.cs
+new file mode 100644
+index 0000000..896b6bd
+--- /dev/null
++++ b/Services/AuthService.cs
+@@ -0,0 +1,139 @@
++using System.Net.Mail;
++using System.Security.Cryptography;
++using System.Text;
++using System.Text.Json;
++using System.Text.RegularExpressions;
++using Microsoft.JSInterop;
++
++namespace FlowState.Services;
++
++public record UserAccount(string Username, string Email, string Salt, string Hash);
++public record AuthResult(bool Ok, string? Error = null);
++
++/// <summary>Pure validation rules, kept separate so they are easy to unit test.</summary>
++public static class AuthRules
++{
++    public const int MinPassword = 8;
++
++    static readonly Regex UserRx = new("^[A-Za-z0-9_]{3,20}$", RegexOptions.Compiled);
++
++    public static string? Username(string? v) =>
++        UserRx.IsMatch(v?.Trim() ?? "") ? null : "3–20 characters: letters, numbers, underscore.";
++
++    public static string? Email(string? v)
++    {
++        var s = v?.Trim() ?? "";
++        if (s.Length == 0 || s.Length > 254) return "Enter a valid email address.";
++        try
++        {
++            var a = new MailAddress(s);
++            // MailAddress accepts "Name <x@y>" forms; require the address to equal the input and have a dotted domain.
++            return a.Address == s && a.Host.Contains('.') ? null : "Enter a valid email address.";
++        }
++        catch (FormatException) { return "Enter a valid email address."; }
++    }
++
++    public static string? Password(string? v) =>
++        (v?.Length ?? 0) >= MinPassword ? null : $"Use at least {MinPassword} characters.";
++
++    public static string? Confirm(string? pw, string? confirm) =>
++        pw == confirm ? null : "Passwords don't match.";
++}
++
++/// <summary>
++/// Client-side account store for the Blazor WASM app. Accounts live in the browser's
++/// localStorage with salted, iterated SHA-256 hashes. This is fine for a local/demo app,
++/// but it is NOT real security: swap this for a server API (and real password hashing)
++/// before storing anything that matters.
++/// </summary>
++public class AuthService
++{
++    const string UsersKey = "flowstate.users", SessionKey = "flowstate.session";
++    const int HashRounds = 20_000;
++
++    readonly IJSRuntime _js;
++    List<UserAccount> _users = new();
++    bool _loaded;
++
++    public AuthService(IJSRuntime js) => _js = js;
++
++    public event Action? Changed;
++    public UserAccount? Current { get; private set; }
++    public bool IsSignedIn => Current is not null;
++
++    /// <summary>Loads accounts and the saved session once. Safe to call repeatedly.</summary>
++    public async Task InitAsync()
++    {
++        if (_loaded) return;
++        _users = Read<List<UserAccount>>(await GetAsync(UsersKey)) ?? new();
++        var email = await GetAsync(SessionKey);
++        Current = email is null ? null : _users.FirstOrDefault(u => Same(u.Email, email));
++        _loaded = true;
++    }
++
++    public async Task<AuthResult> RegisterAsync(string username, string email, string password, string confirm)
++    {
++        await InitAsync();
++        username = username.Trim(); email = email.Trim();
++
++        var err = AuthRules.Username(username) ?? AuthRules.Email(email)
++               ?? AuthRules.Password(password) ?? AuthRules.Confirm(password, confirm);
++        if (err is not null) return new(false, err);
++
++        if (_users.Any(u => Same(u.Email, email))) return new(false, "An account with that email already exists.");
++        if (_users.Any(u => Same(u.Username, username))) return new(false, "That username is taken.");
++
++        var salt = Convert.ToBase64String(RandomNumberGenerator.GetBytes(16));
++        var user = new UserAccount(username, email, salt, Hash(password, salt));
++        _users.Add(user);
++        await SetAsync(UsersKey, JsonSerializer.Serialize(_users));
++        await StartSessionAsync(user);
++        return new(true);
++    }
++
++    public async Task<AuthResult> SignInAsync(string email, string password)
++    {
++        await InitAsync();
++        var user = _users.FirstOrDefault(u => Same(u.Email, email.Trim()));
++        // Same message for unknown email and wrong password so accounts can't be enumerated.
++        if (user is null || !FixedTimeEquals(user.Hash, Hash(password, user.Salt)))
++            return new(false, "Incorrect email or password.");
++        await StartSessionAsync(user);
++        return new(true);
++    }
++
++    public async Task SignOutAsync()
++    {
++        Current = null;
++        await _js.InvokeVoidAsync("localStorage.removeItem", SessionKey);
++        Changed?.Invoke();
++    }
++
++    async Task StartSessionAsync(UserAccount user)
++    {
++        Current = user;
++        await SetAsync(SessionKey, user.Email);
++        Changed?.Invoke();
++    }
++
++    static bool Same(string a, string b) => string.Equals(a, b, StringComparison.OrdinalIgnoreCase);
++
++    static string Hash(string password, string salt)
++    {
++        var data = SHA256.HashData(Encoding.UTF8.GetBytes(salt + password));
++        for (var i = 0; i < HashRounds; i++) data = SHA256.HashData(data);
++        return Convert.ToBase64String(data);
++    }
++
++    static bool FixedTimeEquals(string a, string b) =>
++        CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(a), Encoding.UTF8.GetBytes(b));
++
++    static T? Read<T>(string? json)
++    {
++        if (string.IsNullOrEmpty(json)) return default;
++        try { return JsonSerializer.Deserialize<T>(json); } catch (JsonException) { return default; }
++    }
++
++    async Task<string?> GetAsync(string key) => await _js.InvokeAsync<string?>("localStorage.getItem", key);
++    async Task SetAsync(string key, string value) => await _js.InvokeVoidAsync("localStorage.setItem", key, value);
++}
+diff --git a/Services/GameState.cs b/Services/GameState.cs
+index d988f9f..233de47 100644
+--- a/Services/GameState.cs
++++ b/Services/GameState.cs
+@@ -57,6 +57,14 @@ public class GameState : IDisposable
+         if (Energy < MaxEnergy && --RegenLeft <= 0) { Energy++; RegenLeft = RegenSeconds * (CrashActive ? 2 : 1); }
+         Changed?.Invoke();
+     }
++    /// <summary>Resets progress for a brand-new account: Level 1, full energy, no gold, no missions.</summary>
++    public void StartFresh()
++    {
++        Level = 1; Exp = 0; Energy = MaxEnergy; Gold = 0; RegenLeft = RegenSeconds;
++        CrashUntil = null; Missions.Clear();
++        foreach (var c in Items) c.Qty = 0;
++        Changed?.Invoke();
++    }
+     public string RegenText => $"{RegenLeft / 60}:{RegenLeft % 60:00}";
+ 
+     public bool CanClaim(Mission m) => !m.Claimed && Energy >= m.Cost;
+@@ -67,7 +75,7 @@ public class GameState : IDisposable
+         while (Exp >= ExpNeeded) { Exp -= ExpNeeded; Level++; }
+         Changed?.Invoke();
+     }
+-    public void Add(Mission m) { m.Id = Missions.Max(x => x.Id) + 1; Missions.Add(m); Changed?.Invoke(); }
++    public void Add(Mission m) { m.Id = Missions.Select(x => x.Id).DefaultIfEmpty(0).Max() + 1; Missions.Add(m); Changed?.Invoke(); }
+     public void Remove(Mission m) { Missions.Remove(m); Changed?.Invoke(); }
+     public void Redeem(ShopItem s) { if (Gold >= s.Price) { Gold -= s.Price; Changed?.Invoke(); } }
+     public void Use(Consumable c)
+diff --git a/wwwroot/css/app.css b/wwwroot/css/app.css
+index 09c6ac4..a69764b 100644
+--- a/wwwroot/css/app.css
++++ b/wwwroot/css/app.css
+@@ -107,9 +107,7 @@ input::placeholder{color:#6d7480}
+ @media(max-width:820px){.auth{grid-template-columns:1fr}.auth-l{display:none}}
+ .auth-l{background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem}
+ .logo{font-size:4rem;font-weight:700;letter-spacing:.12em}.tag{font-style:italic;color:var(--muted);font-size:1.1rem}
+-.hex{width:180px;height:200px;margin:2rem 0 .5rem;background:#2b3038;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center}
+-.hex-in{width:150px;height:170px;background:var(--bg2);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);display:grid;place-items:center;text-align:center;font-size:.7rem;color:var(--muted);padding-top:1.5rem}
+-.hex-in b{font:700 2.2rem/1 var(--head);color:var(--gold);display:block}
++.art{width:300px;max-width:100%;height:auto;margin:1rem 0 .3rem}
+ .xp{width:175px;height:7px;background:var(--field)}.xp i{display:block;height:100%;background:var(--gold)}
+ .xp.seg{width:200px;height:10px}.xp.seg i{background:repeating-linear-gradient(90deg,var(--gold) 0 22px,var(--bg2) 22px 25px)}
+ .cap{font-size:.72rem;color:var(--muted);letter-spacing:.1em}
+@@ -118,3 +116,16 @@ input::placeholder{color:#6d7480}
+ .auth-form{width:100%;max-width:480px}.auth-form h2{font-size:2.3rem;letter-spacing:.1em}.auth-form .sub{margin:.5rem 0 1rem}
+ .pw{position:relative;display:block}.eye{position:absolute;right:.8rem;top:1.3rem;background:none;border:0;color:var(--muted);cursor:pointer;font-size:1.1rem}
+ @media(prefers-reduced-motion:reduce){*{transition:none!important}}
++
++/* auth: validation, feedback, small controls */
++.err{display:block;margin-top:.4rem;color:#d2685f;font-size:.78rem;letter-spacing:0;text-transform:none}
++.hint{display:block;margin-top:.4rem;color:#666b75;font-size:.78rem;letter-spacing:0;text-transform:none}
++input[aria-invalid="true"]{border-color:var(--danger)}
++.auth-err{margin-top:1rem;padding:.7rem 1rem;border-left:2px solid var(--danger);background:rgba(196,69,58,.12);color:#d2685f}
++.linkbtn{background:none;border:0;font:inherit;cursor:pointer;padding:0}
++.linkbtn:hover{color:var(--text)}
++.eye{display:grid;place-items:center;top:50%;transform:translateY(-50%)}
++.eye:hover{color:var(--text)}
++.side{display:flex;flex-direction:column}
++.user{margin-top:auto;padding:1rem 1.2rem;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:.5rem;align-items:flex-start}
++.user b{font:700 1.1rem var(--head);letter-spacing:.06em}
