@@ -26,3 +26,11 @@ Sometimes you need to complete a 60-Energy task, but your bar is sitting at 20. 
 - Kopiko Lucky Day: A standard consumable. Clicking "Use" in the Blazor inventory adds an instant +60 Energy to your current pool, allowing you to bypass the regeneration timer and tackle another task.
 
 - Cobra Energy (Variant): A high-risk, high-reward consumable. Clicking this restores +100 Energy instantly for a massive study session, but triggers a C# boolean that cuts your natural Energy regeneration rate in half for the next four hours to simulate the caffeine crash.
+
+## Styling (Tailwind CSS v4)
+Styles are utility classes in the `.razor` files. Design tokens (colors, fonts, breakpoints) live in `Styles/tailwind.css`; repeated class recipes (buttons, cards, chips, category colors) live in `Ui.cs`.
+
+- Requires Node.js 18+. First time: `npm install && npm run css:build`
+- While developing, run `npm run css:watch` next to `dotnet watch`
+- `dotnet build` regenerates `wwwroot/css/app.css` automatically (skip with `-p:SkipTailwind=true`)
+- Write class names out in full (`text-academic`, never `text-@cat`) so Tailwind can detect them

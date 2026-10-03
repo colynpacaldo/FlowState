@@ -1,0 +1,83 @@
+/* FlowState — Tailwind CSS v4. Source of truth for the design tokens.
+   Compiled to wwwroot/css/app.css by `npm run css:build` (also runs on `dotnet build`). */
+@import "tailwindcss" source(none);
+
+/* Only scan files that contain class names (keeps bin/ and obj/ out of the scan). */
+@source "../App.razor";
+@source "../Layout";
+@source "../Pages";
+@source "../Ui.cs";
+@source "../wwwroot/index.html";
+
+@theme {
+  --color-*: initial;
+  --color-canvas: #141518;
+  --color-surface: #1c1f24;
+  --color-panel: #20242a;
+  --color-field: #282c34;
+  --color-line: #2d323b;
+  --color-fg: #eae6de;
+  --color-muted: #8a909c;
+  --color-dim: #666b75;
+  --color-sect: #7c869a;
+  --color-gold: #d9a441;
+  --color-gold-dim: #8a6a2a;
+  --color-ember: #e8823c;
+  --color-academic: #6b86b8;
+  --color-creative: #d0664a;
+  --color-physical: #7a9a55;
+  --color-danger: #c4453a;
+  --color-danger-soft: #d2685f;
+  --color-danger-line: #5c2a27;
+  --color-danger-edge: #6a2b27;
+
+  --font-head: "Barlow Condensed", "Arial Narrow", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Original @media(max-width:…) breakpoints. `max-compact:` = viewport ≤ 820px, etc. */
+  --breakpoint-compact: 821px;
+  --breakpoint-form: 901px;
+  --breakpoint-wide: 1001px;
+}
+
+@layer base {
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    background: var(--color-canvas);
+    color: var(--color-fg);
+    font: 400 14px/1.45 var(--font-body);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* Shapes Tailwind has no built-in utility for. */
+@utility clip-btn {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+}
+@utility clip-cut-12 {
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+}
+@utility clip-cut-14 {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+@utility bg-energy {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 calc(12.5% - 1px), rgb(0 0 0 / 0.25) calc(12.5% - 1px) 12.5%),
+    var(--color-gold);
+}
+@utility bg-segments {
+  background: repeating-linear-gradient(90deg, var(--color-gold) 0 22px, var(--color-surface) 22px 25px);
+}

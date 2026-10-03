@@ -1,57 +1,57 @@
 @page "/"
 @inject GameState G
-<header class="hud">
-    <div class="row between"><span class="lbl">ENERGY RESERVE</span><span class="big gold">@G.Energy <small>/ @GameState.MaxEnergy</small></span></div>
-    <div class="bar energy"><i style="width:@(G.Energy * 100 / GameState.MaxEnergy)%"></i></div>
-    <div class="row between sub sm"><span>@(G.CrashActive ? "Regen halved" : "Regen active")</span><span>+1 in @G.RegenText</span></div>
-    <div class="row xprow">
-        <div class="lvl"><small>LVL</small><b>@G.Level</b></div>
-        <div class="grow"><div class="row between lbl"><span>EXPERIENCE</span><span class="mono">@G.Exp / @GameState.ExpNeeded EXP</span></div>
-            <div class="bar thin"><i style="width:@(G.Exp * 100 / GameState.ExpNeeded)%"></i></div>
-            <span class="sub sm">@(GameState.ExpNeeded - G.Exp) EXP to level @(G.Level + 1)</span></div>
-        <div class="bal"><small>BALANCE</small><b class="gold">◈ @G.Gold.ToString("N0")</b></div>
+<header class="border-b border-line bg-surface px-10 py-[1.6rem]">
+    <div class="flex items-center justify-between"><span class="@Ui.Lbl">ENERGY RESERVE</span><span class="font-head text-[1.8rem] leading-[normal] font-bold text-gold">@G.Energy <small class="text-[1.1rem] text-muted">/ @GameState.MaxEnergy</small></span></div>
+    <div class="relative mt-[.6rem] mb-[.3rem] h-10 bg-field"><i class="block h-full bg-energy" style="width:@(G.Energy * 100 / GameState.MaxEnergy)%"></i></div>
+    <div class="flex items-center justify-between text-[.78rem] text-muted"><span>@(G.CrashActive ? "Regen halved" : "Regen active")</span><span>+1 in @G.RegenText</span></div>
+    <div class="mt-[1.4rem] flex items-center gap-6">
+        <div class="h-[70px] w-16 bg-panel pt-[.4rem] text-center clip-cut-12"><small class="block text-[.65rem] tracking-[.15em] text-muted">LVL</small><b class="font-head text-[2.2rem] leading-none font-bold">@G.Level</b></div>
+        <div class="flex-1"><div class="flex items-center justify-between text-[.72rem] font-medium tracking-[.14em] text-muted"><span>EXPERIENCE</span><span class="font-mono">@G.Exp / @GameState.ExpNeeded EXP</span></div>
+            <div class="relative mt-2 mb-[.3rem] h-[6px] bg-field"><i class="block h-full bg-[#b8b5ae]" style="width:@(G.Exp * 100 / GameState.ExpNeeded)%"></i></div>
+            <span class="text-[.78rem] text-muted">@(GameState.ExpNeeded - G.Exp) EXP to level @(G.Level + 1)</span></div>
+        <div class="text-right"><small class="block text-[.68rem] tracking-[.14em] text-muted">BALANCE</small><b class="font-head text-[1.9rem] leading-[normal] font-bold text-gold">◈ @G.Gold.ToString("N0")</b></div>
     </div>
 </header>
-<div class="dash">
+<div class="grid grid-cols-[1fr_240px] gap-8 px-10 py-8 max-wide:grid-cols-1">
   <div>
-    <div class="row between"><h2>ACTIVE MISSIONS</h2><a class="btn ghost" href="new">+ NEW MISSION</a></div>
-    <h3 class="sect">DAILY MISSIONS</h3>
+    <div class="flex items-center justify-between"><h2 class="@Ui.H2">ACTIVE MISSIONS</h2><a class="@Ui.Ghost" href="new">+ NEW MISSION</a></div>
+    <h3 class="@Ui.Sect">DAILY MISSIONS</h3>
     @foreach (var m in G.Missions.Where(x => !x.Heavy))
     {
-        <div class="mrow @m.Cat.ToString().ToLower() @(m.Claimed ? "done" : "")">
-            <span class="chip @m.Cat.ToString().ToLower()">@m.Cat.ToString().ToUpper()</span>
-            <span class="grow name">@m.Name</span>
-            <span class="mono st"><em>⚡</em> @m.Cost</span><span class="mono st">+@m.Exp EXP</span><span class="mono st">+◈@m.Gold</span>
-            @if (m.Claimed) { <span class="mono st">✓ CLAIMED</span> }
-            else { <button class="btn sm" disabled="@(!G.CanClaim(m))" @onclick="() => G.Claim(m)">CLAIM</button> }
+        <div class="@Ui.Mrow(m.Cat, m.Claimed)">
+            <span class="@Ui.Chip(m.Cat)">@m.Cat.ToString().ToUpper()</span>
+            <span class="flex-1 @(m.Claimed ? "line-through" : "")">@m.Name</span>
+            <span class="@Ui.St"><em class="@Ui.Bolt">⚡</em> @m.Cost</span><span class="@Ui.St">+@m.Exp EXP</span><span class="@Ui.St">+◈@m.Gold</span>
+            @if (m.Claimed) { <span class="@Ui.St">✓ CLAIMED</span> }
+            else { <button class="@Ui.BtnSm" disabled="@(!G.CanClaim(m))" @onclick="() => G.Claim(m)">CLAIM</button> }
         </div>
     }
-    <h3 class="sect">HEAVY QUESTS</h3>
-    <div class="quests">
+    <h3 class="@Ui.Sect">HEAVY QUESTS</h3>
+    <div class="grid grid-cols-[repeat(auto-fill,minmax(270px,1fr))] gap-4">
     @foreach (var m in G.Missions.Where(x => x.Heavy))
     {
-        <div class="quest @m.Cat.ToString().ToLower()">
-            <div class="row between"><span class="chip @m.Cat.ToString().ToLower()">@m.Cat.ToString().ToUpper()</span><span class="lbl">HEAVY QUEST</span></div>
-            <h4>@m.Name.ToUpper()</h4>
-            <div class="row end">
-                <div><small class="lbl">COST</small><b class="q gold"><em>⚡</em> @m.Cost</b></div>
-                <div><small class="lbl">REWARD</small><b class="q">+@m.Exp EXP</b></div>
-                <div><small class="lbl">GOLD</small><b class="q">◈@m.Gold</b></div>
-                <button class="btn" disabled="@(!G.CanClaim(m))" @onclick="() => G.Claim(m)">CLAIM</button>
+        <div class="@Ui.QuestCard(m.Cat)">
+            <div class="flex items-center justify-between"><span class="@Ui.Chip(m.Cat)">@m.Cat.ToString().ToUpper()</span><span class="@Ui.Lbl">HEAVY QUEST</span></div>
+            <h4 class="mt-[.9rem] mb-4 min-h-[2.6rem] font-head text-[1.2rem] font-bold tracking-[.06em]">@m.Name.ToUpper()</h4>
+            <div class="flex items-end gap-[1.2rem]">
+                <div><small class="@Ui.Lbl">COST</small><b class="@Ui.Q text-gold"><em class="@Ui.Bolt">⚡</em> @m.Cost</b></div>
+                <div><small class="@Ui.Lbl">REWARD</small><b class="@Ui.Q">+@m.Exp EXP</b></div>
+                <div><small class="@Ui.Lbl">GOLD</small><b class="@Ui.Q">◈@m.Gold</b></div>
+                <button class="@Ui.Btn" disabled="@(!G.CanClaim(m))" @onclick="() => G.Claim(m)">CLAIM</button>
             </div>
         </div>
     }
     </div>
   </div>
   <aside>
-    <h3 class="sect">CONSUMABLES</h3>
+    <h3 class="@Ui.Sect">CONSUMABLES</h3>
     @foreach (var c in G.Items)
     {
-        <div class="card cons"><div class="row between"><b>@c.Name</b><span class="qty">×@c.Qty</span></div>
-            <span class="gold sm">+@c.Energy <em>⚡</em></span>
-            <p class="sub sm">@c.Desc</p>
-            @if (c.Risk != null) { <p class="risk sm">⚠ Halves regen rate for 4 hours after use.</p> }
-            <button class="btn ghost wide" disabled="@(c.Qty < 1)" @onclick="() => G.Use(c)">USE</button></div>
+        <div class="@Ui.Card"><div class="flex items-center justify-between"><b>@c.Name</b><span class="@Ui.Qty">×@c.Qty</span></div>
+            <span class="text-[.78rem] text-gold">+@c.Energy <em class="@Ui.Bolt">⚡</em></span>
+            <p class="text-[.78rem] text-muted">@c.Desc</p>
+            @if (c.Risk != null) { <p class="@Ui.Risk">⚠ Halves regen rate for 4 hours after use.</p> }
+            <button class="@Ui.GhostWide" disabled="@(c.Qty < 1)" @onclick="() => G.Use(c)">USE</button></div>
     }
   </aside>
 </div>

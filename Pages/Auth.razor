@@ -7,31 +7,31 @@
 @inject GameState G
 @implements IDisposable
 <PageTitle>@(Reg ? "Create account" : "Sign in") · FlowState</PageTitle>
-<div class="auth">
-    <section class="auth-l">
-        <h1 class="logo">FLOW<span>STATE</span></h1>
-        <p class="tag">Spend energy. Earn your time back.</p>
+<div class="grid min-h-screen grid-cols-2 max-compact:grid-cols-1">
+    <section class="flex flex-col items-center justify-center gap-4 border-r border-line bg-surface p-8 max-compact:hidden">
+        <h1 class="font-head text-[4rem] font-bold tracking-[.12em]">FLOW<span class="text-gold">STATE</span></h1>
+        <p class="text-[1.1rem] text-muted italic">Spend energy. Earn your time back.</p>
 
-        <svg class="art" viewBox="0 0 300 240" role="img" aria-hidden="true">
-            <polygon points="@Hex(98)" fill="none" stroke="var(--line)" stroke-width="1.2" />
+        <svg class="mt-4 mb-[.3rem] h-auto w-[300px] max-w-full" viewBox="0 0 300 240" role="img" aria-hidden="true">
+            <polygon points="@Hex(98)" fill="none" class="stroke-line" stroke-width="1.2" />
             @if (Reg)
             {
-                <polygon points="@Hex(76)" fill="none" stroke="var(--gold-d)" stroke-width="1.6" />
-                <circle cx="150" cy="105" r="36" fill="none" stroke="var(--line)" stroke-width="1.2" />
+                <polygon points="@Hex(76)" fill="none" class="stroke-gold-dim" stroke-width="1.6" />
+                <circle cx="150" cy="105" r="36" fill="none" class="stroke-line" stroke-width="1.2" />
                 @LevelBadge
             }
             else
             {
-                <polygon points="@Hex(76)" fill="none" stroke="var(--gold-d)" stroke-width="1.6" />
-                <polygon points="@Hex(46)" fill="none" stroke="var(--gold-d)" stroke-width="1.2" />
-                <g stroke="var(--gold-d)" stroke-width="1.2">
+                <polygon points="@Hex(76)" fill="none" class="stroke-gold-dim" stroke-width="1.6" />
+                <polygon points="@Hex(46)" fill="none" class="stroke-gold-dim" stroke-width="1.2" />
+                <g class="stroke-gold-dim" stroke-width="1.2">
                     <line x1="150" y1="105" x2="150" y2="66" />
                     <line x1="150" y1="105" x2="184" y2="125" />
                     <line x1="150" y1="105" x2="116" y2="125" />
                 </g>
-                <circle cx="150" cy="105" r="9" fill="var(--bg2)" stroke="var(--gold)" stroke-width="2.5" />
-                <circle cx="150" cy="105" r="2.5" fill="var(--gold)" />
-                <g stroke="var(--line)" stroke-width="1.2">
+                <circle cx="150" cy="105" r="9" class="fill-surface stroke-gold" stroke-width="2.5" />
+                <circle cx="150" cy="105" r="2.5" class="fill-gold" />
+                <g class="stroke-line" stroke-width="1.2">
                     <line x1="100" y1="216" x2="200" y2="216" />
                     <line x1="112" y1="212" x2="112" y2="220" /><line x1="125" y1="212" x2="125" y2="220" />
                     <line x1="138" y1="212" x2="138" y2="220" /><line x1="162" y1="212" x2="162" y2="220" />
@@ -39,41 +39,41 @@
                     <line x1="20" y1="224" x2="40" y2="224" /><line x1="30" y1="214" x2="30" y2="234" />
                     <line x1="260" y1="224" x2="280" y2="224" /><line x1="270" y1="214" x2="270" y2="234" />
                 </g>
-                <line x1="128" y1="216" x2="176" y2="216" stroke="var(--gold)" stroke-width="2.5" />
+                <line x1="128" y1="216" x2="176" y2="216" class="stroke-gold" stroke-width="2.5" />
             }
         </svg>
 
-        <div class="xp @(Reg ? "seg" : "")"><i style="width:@(Reg ? 100 : 65)%"></i></div>
-        <p class="mono cap">@(Reg ? "240 / 240 · FULL" : "LVL 1 · 0 / 100 EXP")</p>
-        @if (Reg) { <p class="note">You'll start at <b>Level 1</b> with full energy — 240/240.</p> }
+        <div class="bg-field @(Reg ? "h-[10px] w-[200px]" : "h-[7px] w-[175px]")"><i class="block h-full @(Reg ? "bg-segments" : "bg-gold")" style="width:@(Reg ? 100 : 65)%"></i></div>
+        <p class="font-mono text-[.72rem] tracking-[.1em] text-muted">@(Reg ? "240 / 240 · FULL" : "LVL 1 · 0 / 100 EXP")</p>
+        @if (Reg) { <p class="mt-6 border border-line px-[1.4rem] py-[.9rem] text-muted">You'll start at <b class="text-gold">Level 1</b> with full energy — 240/240.</p> }
     </section>
 
-    <section class="auth-r">
-        <form class="auth-form" @onsubmit="Submit" novalidate>
-            <h2>@(Reg ? "CREATE ACCOUNT" : "SIGN IN")</h2>
-            <p class="sub">@(Reg ? "Begin your mission log." : "Welcome back, Operator.")</p>
+    <section class="flex items-center justify-center bg-canvas p-8">
+        <form class="w-full max-w-[480px]" @onsubmit="Submit" novalidate>
+            <h2 class="font-head text-[2.3rem] font-bold tracking-[.1em]">@(Reg ? "CREATE ACCOUNT" : "SIGN IN")</h2>
+            <p class="mt-2 mb-4 text-muted">@(Reg ? "Begin your mission log." : "Welcome back, Operator.")</p>
 
             @if (Reg)
             {
-                <label>USERNAME
-                    <input @bind="username" @bind:event="oninput" @onblur='() => Touch("u")' placeholder="commander_rex"
+                <label class="@Ui.Label">USERNAME
+                    <input class="@Ui.Input" @bind="username" @bind:event="oninput" @onblur='() => Touch("u")' placeholder="commander_rex"
                            autocomplete="username" maxlength="20" aria-invalid="@(Inv(Err("u", AuthRules.Username(username)) is not null))" />
-                    @if (Err("u", AuthRules.Username(username)) is string mu) { <small class="err">@mu</small> }
+                    @if (Err("u", AuthRules.Username(username)) is string mu) { <small class="@Ui.Err">@mu</small> }
                 </label>
             }
 
-            <label>EMAIL
-                <input type="email" @bind="email" @bind:event="oninput" @onblur='() => Touch("e")' placeholder="your@email.com"
+            <label class="@Ui.Label">EMAIL
+                <input class="@Ui.Input" type="email" @bind="email" @bind:event="oninput" @onblur='() => Touch("e")' placeholder="your@email.com"
                        autocomplete="email" aria-invalid="@(Inv(Reg && Err("e", AuthRules.Email(email)) is not null))" />
-                @if (Reg && Err("e", AuthRules.Email(email)) is string me) { <small class="err">@me</small> }
+                @if (Reg && Err("e", AuthRules.Email(email)) is string me) { <small class="@Ui.Err">@me</small> }
             </label>
 
-            <label>PASSWORD
-                <span class="pw">
-                    <input type="@(show ? "text" : "password")" @bind="password" @bind:event="oninput" @onblur='() => Touch("p")'
+            <label class="@Ui.Label">PASSWORD
+                <span class="relative block">
+                    <input class="@Ui.Input" type="@(show ? "text" : "password")" @bind="password" @bind:event="oninput" @onblur='() => Touch("p")'
                            autocomplete="@(Reg ? "new-password" : "current-password")"
                            aria-invalid="@(Inv(Reg && Err("p", AuthRules.Password(password)) is not null))" />
-                    <button type="button" class="eye" @onclick="() => show = !show"
+                    <button type="button" class="@Ui.Eye" @onclick="() => show = !show"
                             aria-label="@(show ? "Hide password" : "Show password")" aria-pressed="@(show ? "true" : "false")">
                         @if (show)
                         {
@@ -87,38 +87,38 @@
                 </span>
                 @if (Reg)
                 {
-                    @if (Err("p", AuthRules.Password(password)) is string mp) { <small class="err">@mp</small> }
-                    else { <small class="hint">At least @AuthRules.MinPassword characters.</small> }
+                    @if (Err("p", AuthRules.Password(password)) is string mp) { <small class="@Ui.Err">@mp</small> }
+                    else { <small class="@Ui.Hint">At least @AuthRules.MinPassword characters.</small> }
                 }
             </label>
 
             @if (Reg)
             {
-                <label>CONFIRM PASSWORD
-                    <input type="password" @bind="confirm" @bind:event="oninput" @onblur='() => Touch("c")'
+                <label class="@Ui.Label">CONFIRM PASSWORD
+                    <input class="@Ui.Input" type="password" @bind="confirm" @bind:event="oninput" @onblur='() => Touch("c")'
                            autocomplete="new-password" aria-invalid="@(Inv(Err("c", AuthRules.Confirm(password, confirm)) is not null))" />
-                    @if (Err("c", AuthRules.Confirm(password, confirm)) is string mc) { <small class="err">@mc</small> }
+                    @if (Err("c", AuthRules.Confirm(password, confirm)) is string mc) { <small class="@Ui.Err">@mc</small> }
                 </label>
             }
 
-            @if (error is not null) { <p class="auth-err" role="alert">@error</p> }
+            @if (error is not null) { <p class="mt-4 border-l-2 border-danger bg-danger/12 px-4 py-[.7rem] text-danger-soft" role="alert">@error</p> }
 
-            <button type="submit" class="btn wide" disabled="@(!Valid || busy)">
+            <button type="submit" class="@Ui.BtnWide" disabled="@(!Valid || busy)">
                 @(busy ? "PLEASE WAIT…" : Reg ? "CREATE ACCOUNT" : "SIGN IN")
             </button>
 
             @if (!Reg)
             {
-                <p class="ctr"><button type="button" class="ul linkbtn" @onclick="() => forgot = !forgot">Forgot password?</button></p>
+                <p class="mt-[.9rem] text-center"><button type="button" class="@Ui.LinkBtn" @onclick="() => forgot = !forgot">Forgot password?</button></p>
                 @if (forgot)
                 {
-                    <p class="ctr sub sm" role="status">Password reset isn't available yet — accounts are stored only in this browser.</p>
+                    <p class="mt-[.9rem] text-center text-[.78rem] text-muted" role="status">Password reset isn't available yet — accounts are stored only in this browser.</p>
                 }
-                <p class="ctr sub">New here? <a class="gold" href="register">Create an account</a></p>
+                <p class="mt-[.9rem] text-center text-muted">New here? <a class="text-gold" href="register">Create an account</a></p>
             }
             else
             {
-                <p class="ctr sub">Already have an account? <a class="gold" href="login">Sign in</a></p>
+                <p class="mt-[.9rem] text-center text-muted">Already have an account? <a class="text-gold" href="login">Sign in</a></p>
             }
         </form>
     </section>
@@ -138,8 +138,8 @@
 
     // Razor reserves the <text> tag, so SVG <text> elements are emitted as raw markup.
     static readonly MarkupString LevelBadge = new(
-        "<text x=\"150\" y=\"118\" text-anchor=\"middle\" fill=\"var(--gold)\" style=\"font:700 40px var(--head)\">1</text>" +
-        "<text x=\"150\" y=\"134\" text-anchor=\"middle\" fill=\"var(--muted)\" style=\"font:500 10px var(--body);letter-spacing:.1em\">LVL</text>");
+        """<text x="150" y="118" text-anchor="middle" class="fill-gold font-head text-[40px] font-bold">1</text>""" +
+        """<text x="150" y="134" text-anchor="middle" class="fill-muted font-body text-[10px] font-medium tracking-[.1em]">LVL</text>""");
 
     static string? Inv(bool invalid) => invalid ? "true" : null;
     void Touch(string k) => touched.Add(k);

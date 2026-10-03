@@ -1,14 +1,14 @@
 @page "/missions"
 @inject GameState G
-<div class="page narrow">
-    <h1>MISSION MANAGER</h1><p class="sub">Manage your routines. Archive unused missions instead of deleting.</p>
-    <h3 class="sect">ACTIVE — @G.Missions.Count</h3>
+<div class="max-w-[820px] px-10 py-8">
+    <h1 class="@Ui.H1">MISSION MANAGER</h1><p class="text-muted">Manage your routines. Archive unused missions instead of deleting.</p>
+    <h3 class="@Ui.Sect">ACTIVE — @G.Missions.Count</h3>
     @foreach (var m in G.Missions)
     {
-        <div class="mrow @m.Cat.ToString().ToLower()"><span class="chip">@(m.Heavy ? "HEAVY" : "DAILY")</span>
-            <span class="cat @m.Cat.ToString().ToLower()">@m.Cat.ToString().ToUpper()</span><span class="grow name">@m.Name</span>
-            <span class="mono st"><em>⚡</em> @m.Cost</span><span class="mono st">+@m.Exp EXP</span>
-            <button class="btn ghost sm" @onclick="() => G.Remove(m)">Archive</button>
-            <button class="btn ghost sm" @onclick="() => G.Remove(m)">Delete</button></div>
+        <div class="@Ui.Mrow(m.Cat)"><span class="@Ui.ChipPlain">@(m.Heavy ? "HEAVY" : "DAILY")</span>
+            <span class="@Ui.CatText(m.Cat)">@m.Cat.ToString().ToUpper()</span><span class="flex-1">@m.Name</span>
+            <span class="@Ui.St"><em class="@Ui.Bolt">⚡</em> @m.Cost</span><span class="@Ui.St">+@m.Exp EXP</span>
+            <button class="@Ui.GhostSm" @onclick="() => G.Remove(m)">Archive</button>
+            <button class="@Ui.GhostSm" @onclick="() => G.Remove(m)">Delete</button></div>
     }
 </div>

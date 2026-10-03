@@ -1,16 +1,16 @@
 @page "/shop"
 @inject GameState G
-<div class="page">
-    <div class="row between"><div><h1>REWARD SHOP</h1><p class="sub">Redeem your earnings for real-life rewards.</p></div>
-        <div class="card bal"><small>BALANCE</small><b class="gold">◈ @G.Gold.ToString("N0")</b></div></div>
-    <div class="shop">
+<div class="max-w-[1100px] px-10 py-8">
+    <div class="flex items-center justify-between"><div><h1 class="@Ui.H1">REWARD SHOP</h1><p class="text-muted">Redeem your earnings for real-life rewards.</p></div>
+        <div class="@Ui.CardBal"><small class="block text-[.68rem] tracking-[.14em] text-muted">BALANCE</small><b class="font-head text-[1.9rem] leading-[normal] font-bold text-gold">◈ @G.Gold.ToString("N0")</b></div></div>
+    <div class="mt-[1.8rem] grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-4">
     @foreach (var s in G.Shop)
     {
         var ok = G.Gold >= s.Price;
-        <div class="card item"><span class="ico">@s.Icon</span><h4>@s.Name.ToUpper()</h4><p class="sub sm">@s.Desc</p>
-            <div class="row between"><b class="q @(ok ? "gold" : "muted")">◈ @s.Price.ToString("N0")</b>
-                @if (!ok) { <span class="risk-t sm">Need @(s.Price - G.Gold) more</span> }</div>
-            <button class="btn wide" disabled="@(!ok)" @onclick="() => G.Redeem(s)">REDEEM</button></div>
+        <div class="@Ui.CardItem"><span class="text-[1.6rem]">@s.Icon</span><h4 class="@Ui.H4">@s.Name.ToUpper()</h4><p class="text-[.78rem] text-muted">@s.Desc</p>
+            <div class="flex items-center justify-between"><b class="@Ui.Q @(ok ? "text-gold" : "text-dim")">◈ @s.Price.ToString("N0")</b>
+                @if (!ok) { <span class="text-[.78rem] text-danger">Need @(s.Price - G.Gold) more</span> }</div>
+            <button class="@Ui.BtnWide" disabled="@(!ok)" @onclick="() => G.Redeem(s)">REDEEM</button></div>
     }
     </div>
 </div>

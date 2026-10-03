@@ -427,3 +427,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Node / Tailwind tooling
+node_modules/
+
+# Build output
+[Bb]in/

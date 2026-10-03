@@ -5,29 +5,29 @@
 @implements IDisposable
 @if (ready)
 {
-<div class="shell">
-    <aside class="side">
-        <div class="brand">FLOW<span>STATE</span><small>TASK MANAGER</small></div>
-        <nav>
-            <NavLink href="" Match="NavLinkMatch.All"><i>▦</i>Dashboard</NavLink>
-            <NavLink href="new"><i>＋</i>New Mission</NavLink>
-            <NavLink href="shop"><i>◈</i>Shop</NavLink>
-            <NavLink href="inventory"><i>▤</i>Inventory</NavLink>
-            <NavLink href="missions"><i>≡</i>Missions</NavLink>
+<div class="grid min-h-screen grid-cols-[200px_1fr] max-compact:grid-cols-1">
+    <aside class="sticky top-0 flex h-screen flex-col border-r border-line bg-surface max-compact:hidden">
+        <div class="block border-b border-line px-[1.2rem] py-[1.4rem] font-head text-[1.5rem] font-bold tracking-[.06em]">FLOW<span class="text-gold">STATE</span><small class="block font-body text-[.65rem] leading-[normal] font-medium tracking-[.12em] text-muted">TASK MANAGER</small></div>
+        <nav class="pt-[.6rem]">
+            <NavLink class="@Ui.NavSide" href="" Match="NavLinkMatch.All"><i class="@Ui.NavIconSide">▦</i>Dashboard</NavLink>
+            <NavLink class="@Ui.NavSide" href="new"><i class="@Ui.NavIconSide">＋</i>New Mission</NavLink>
+            <NavLink class="@Ui.NavSide" href="shop"><i class="@Ui.NavIconSide">◈</i>Shop</NavLink>
+            <NavLink class="@Ui.NavSide" href="inventory"><i class="@Ui.NavIconSide">▤</i>Inventory</NavLink>
+            <NavLink class="@Ui.NavSide" href="missions"><i class="@Ui.NavIconSide">≡</i>Missions</NavLink>
         </nav>
         @if (Auth.Current is { } u)
         {
-            <div class="user"><span class="lbl">OPERATOR</span><b>@u.Username</b>
-                <button type="button" class="btn ghost sm" @onclick="SignOut">SIGN OUT</button></div>
+            <div class="mt-auto flex flex-col items-start gap-2 border-t border-line px-[1.2rem] py-4"><span class="@Ui.Lbl">OPERATOR</span><b class="font-head text-[1.1rem] leading-[normal] font-bold tracking-[.06em]">@u.Username</b>
+                <button type="button" class="@Ui.GhostSm" @onclick="SignOut">SIGN OUT</button></div>
         }
     </aside>
-    <main class="main">@Body</main>
-    <nav class="bottom">
-        <NavLink href="" Match="NavLinkMatch.All"><i>▦</i>Dashboard</NavLink>
-        <NavLink href="new"><i>＋</i>New</NavLink>
-        <NavLink href="shop"><i>◈</i>Shop</NavLink>
-        <NavLink href="inventory"><i>▤</i>Inventory</NavLink>
-        <NavLink href="missions"><i>≡</i>Missions</NavLink>
+    <main class="min-w-0 pb-16">@Body</main>
+    <nav class="fixed inset-x-0 bottom-0 z-5 hidden border-t border-line bg-surface max-compact:flex">
+        <NavLink class="@Ui.NavBottom" href="" Match="NavLinkMatch.All"><i class="@Ui.NavIconBottom">▦</i>Dashboard</NavLink>
+        <NavLink class="@Ui.NavBottom" href="new"><i class="@Ui.NavIconBottom">＋</i>New</NavLink>
+        <NavLink class="@Ui.NavBottom" href="shop"><i class="@Ui.NavIconBottom">◈</i>Shop</NavLink>
+        <NavLink class="@Ui.NavBottom" href="inventory"><i class="@Ui.NavIconBottom">▤</i>Inventory</NavLink>
+        <NavLink class="@Ui.NavBottom" href="missions"><i class="@Ui.NavIconBottom">≡</i>Missions</NavLink>
     </nav>
 </div>
 }

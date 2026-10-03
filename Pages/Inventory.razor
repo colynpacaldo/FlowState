@@ -1,19 +1,19 @@
 @page "/inventory"
 @inject GameState G
-<div class="page narrow">
-    <h1>INVENTORY</h1><p class="sub">Consumables and active effects.</p>
-    <h3 class="sect">ACTIVE EFFECTS</h3>
-    <div class="card">@(G.CrashActive ? $"Caffeine crash — regen halved until {G.CrashUntil:t}." : "No active effects.")</div>
-    <h3 class="sect">CONSUMABLES</h3>
+<div class="max-w-[820px] px-10 py-8">
+    <h1 class="@Ui.H1">INVENTORY</h1><p class="text-muted">Consumables and active effects.</p>
+    <h3 class="@Ui.Sect">ACTIVE EFFECTS</h3>
+    <div class="@Ui.Card">@(G.CrashActive ? $"Caffeine crash — regen halved until {G.CrashUntil:t}." : "No active effects.")</div>
+    <h3 class="@Ui.Sect">CONSUMABLES</h3>
     @foreach (var c in G.Items)
     {
-        <div class="card row between top">
-            <div><div class="row gap"><h4>@c.Name.ToUpper()</h4><span class="qty">×@c.Qty</span></div>
-                <p class="sub">@c.Desc</p>
-                <div class="row gap"><span class="tagg">+@c.Energy <em>⚡</em></span>
-                @if (c.Risk != null) { <span class="tagr sm">⚠ Halves regen rate for 4 hours after use.</span> }</div>
-                @if (c.Risk != null) { <p class="riskbox sm"><b>Risk:</b> @c.Risk</p> }</div>
-            <button class="btn ghost @(c.Risk != null ? "danger" : "")" disabled="@(c.Qty < 1)" @onclick="() => G.Use(c)">USE</button>
+        <div class="@Ui.Card flex items-start justify-between">
+            <div><div class="flex items-center gap-[.8rem]"><h4 class="@Ui.H4">@c.Name.ToUpper()</h4><span class="@Ui.Qty">×@c.Qty</span></div>
+                <p class="text-muted">@c.Desc</p>
+                <div class="flex items-center gap-[.8rem]"><span class="@Ui.TagGold">+@c.Energy <em class="@Ui.Bolt">⚡</em></span>
+                @if (c.Risk != null) { <span class="@Ui.TagRisk">⚠ Halves regen rate for 4 hours after use.</span> }</div>
+                @if (c.Risk != null) { <p class="@Ui.RiskBox"><b>Risk:</b> @c.Risk</p> }</div>
+            <button class="@(c.Risk != null ? Ui.GhostDanger : Ui.Ghost)" disabled="@(c.Qty < 1)" @onclick="() => G.Use(c)">USE</button>
         </div>
     }
 </div>
