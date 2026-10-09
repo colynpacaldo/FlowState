@@ -1,0 +1,99 @@
+digraph FlowState {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=22, labelloc=t, nodesep=0.45, ranksep=1.3, pad=0.4, splines=spline, newrank=true,
+         label=<<B>FlowState — UML Class Diagram</B><BR/><FONT POINT-SIZE="12">Blazor WebAssembly (.NET 8) · generated from github.com/colynpacaldo/FlowState</FONT>>];
+  node [shape=plain, fontname="Helvetica", fontsize=10];
+  edge [fontname="Helvetica", fontsize=9, color="#34495E", arrowsize=0.8];
+Program [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#F3E5F5" ALIGN="CENTER"><FONT POINT-SIZE="9">«entry point»</FONT><BR/><B>Program</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">Main(args): Task<BR/>AddSingleton&lt;GameState&gt;()<BR/>AddSingleton&lt;AuthService&gt;()</TD></TR></TABLE>>];
+App [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#F3E5F5" ALIGN="CENTER"><FONT POINT-SIZE="9">«Razor component»</FONT><BR/><B>App</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">Router → RouteView</TD></TR></TABLE>>];
+LayoutComponentBase [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FAFAFA" COLOR="#34495E"><TR><TD BGCOLOR="#ECEFF1" ALIGN="CENTER"><FONT POINT-SIZE="9">«framework»</FONT><BR/><I><B>LayoutComponentBase</B></I></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+MainLayout [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#FFF3CD" ALIGN="CENTER"><FONT POINT-SIZE="9">«layout · IDisposable»</FONT><BR/><B>MainLayout</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">- ready: bool</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT"># OnInitializedAsync(): Task<BR/>- SignOut(): Task<BR/>- Refresh(): void<BR/>+ Dispose(): void</TD></TR></TABLE>>];
+BlankLayout [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#FFF3CD" ALIGN="CENTER"><FONT POINT-SIZE="9">«layout»</FONT><BR/><B>BlankLayout</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">@Body</TD></TR></TABLE>>];
+Dashboard [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DDEFE0" ALIGN="CENTER"><FONT POINT-SIZE="9">«page · @page /»</FONT><BR/><B>Dashboard</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">(reads GameState; Claim / Use)</TD></TR></TABLE>>];
+NewMission [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DDEFE0" ALIGN="CENTER"><FONT POINT-SIZE="9">«page · @page /new»</FONT><BR/><B>NewMission</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">- name: string<BR/>- cat: Cat<BR/>- heavy: bool<BR/>- cost: int</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">- Prev: Mission<BR/>- Create(): void</TD></TR></TABLE>>];
+Shop [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DDEFE0" ALIGN="CENTER"><FONT POINT-SIZE="9">«page · @page /shop»</FONT><BR/><B>Shop</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">(lists ShopItem; Redeem)</TD></TR></TABLE>>];
+Inventory [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DDEFE0" ALIGN="CENTER"><FONT POINT-SIZE="9">«page · @page /inventory»</FONT><BR/><B>Inventory</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">(lists Consumable; Use)</TD></TR></TABLE>>];
+Missions [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DDEFE0" ALIGN="CENTER"><FONT POINT-SIZE="9">«page · @page /missions»</FONT><BR/><B>Missions</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">(Archive / Delete Mission)</TD></TR></TABLE>>];
+Auth [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DDEFE0" ALIGN="CENTER"><FONT POINT-SIZE="9">«page · IDisposable<BR/>@page /login, /register»</FONT><BR/><B>Auth</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">- username, email, password, confirm: string<BR/>- error: string?<BR/>- show, busy, forgot: bool<BR/>- touched: HashSet&lt;string&gt;</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ Reg: bool<BR/>+ Valid: bool<BR/># OnInitializedAsync(): Task<BR/>- Submit(): Task<BR/>- Touch(k): void<BR/>- Err(k, err): string?<BR/>+ Dispose(): void</TD></TR></TABLE>>];
+GameState [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DCE8FB" ALIGN="CENTER"><FONT POINT-SIZE="9">«service · singleton»</FONT><BR/><B>GameState</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ MaxEnergy = 240 {const}<BR/>+ ExpNeeded = 500 {const}<BR/>+ RegenSeconds = 300 {const}<BR/>+ Energy, Level, Exp, Gold, RegenLeft: int<BR/>+ CrashUntil: DateTime?<BR/>+ CrashActive: bool<BR/>+ RegenText: string<BR/>+ Missions: List&lt;Mission&gt;<BR/>+ Shop: List&lt;ShopItem&gt;<BR/>+ Items: List&lt;Consumable&gt;<BR/>- _t: Timer<BR/>+ «event» Changed: Action</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">- Tick(): void<BR/>+ StartFresh(): void<BR/>+ CanClaim(m: Mission): bool<BR/>+ Claim(m: Mission): void<BR/>+ Add(m: Mission): void<BR/>+ Remove(m: Mission): void<BR/>+ Redeem(s: ShopItem): void<BR/>+ Use(c: Consumable): void<BR/>+ Dispose(): void</TD></TR></TABLE>>];
+IDisposable [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FAFAFA" COLOR="#34495E"><TR><TD BGCOLOR="#ECEFF1" ALIGN="CENTER"><FONT POINT-SIZE="9">«interface»</FONT><BR/><B>IDisposable</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+Mission [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DCE8FB" ALIGN="CENTER"><FONT POINT-SIZE="9">«model»</FONT><BR/><B>Mission</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ Id: int<BR/>+ Name: string<BR/>+ Cat: Cat<BR/>+ Heavy: bool<BR/>+ Cost: int<BR/>+ Claimed: bool<BR/>+ Exp: int  {Cost × 2.5 | 1.5}<BR/>+ Gold: int  {Cost × 1.25 | 0.75}</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+Cat [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DCE8FB" ALIGN="CENTER"><FONT POINT-SIZE="9">«enumeration»</FONT><BR/><B>Cat</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">Academic<BR/>Creative<BR/>Physical</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+ShopItem [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DCE8FB" ALIGN="CENTER"><FONT POINT-SIZE="9">«record»</FONT><BR/><B>ShopItem</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ Icon: string<BR/>+ Name: string<BR/>+ Desc: string<BR/>+ Price: int</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+Consumable [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DCE8FB" ALIGN="CENTER"><FONT POINT-SIZE="9">«model»</FONT><BR/><B>Consumable</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ Name: string<BR/>+ Desc: string<BR/>+ Qty: int<BR/>+ Energy: int<BR/>+ Risk: string?</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+AuthService [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DCE8FB" ALIGN="CENTER"><FONT POINT-SIZE="9">«service · singleton»</FONT><BR/><B>AuthService</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">- UsersKey, SessionKey {const}<BR/>- HashRounds = 20000 {const}<BR/>- _js: IJSRuntime<BR/>- _users: List&lt;UserAccount&gt;<BR/>- _loaded: bool<BR/>+ Current: UserAccount?<BR/>+ IsSignedIn: bool<BR/>+ «event» Changed: Action</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ InitAsync(): Task<BR/>+ RegisterAsync(username, email, password, confirm): Task&lt;AuthResult&gt;<BR/>+ SignInAsync(email, password): Task&lt;AuthResult&gt;<BR/>+ SignOutAsync(): Task<BR/>- StartSessionAsync(user): Task<BR/>- Hash(password, salt): string<BR/>- FixedTimeEquals(a, b): bool</TD></TR></TABLE>>];
+UserAccount [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DCE8FB" ALIGN="CENTER"><FONT POINT-SIZE="9">«record»</FONT><BR/><B>UserAccount</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ Username: string<BR/>+ Email: string<BR/>+ Salt: string<BR/>+ Hash: string</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+AuthResult [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DCE8FB" ALIGN="CENTER"><FONT POINT-SIZE="9">«record»</FONT><BR/><B>AuthResult</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ Ok: bool<BR/>+ Error: string?</TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+AuthRules [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#DCE8FB" ALIGN="CENTER"><FONT POINT-SIZE="9">«static»</FONT><BR/><B>AuthRules</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ MinPassword = 8 {const}</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ Username(v): string?<BR/>+ Email(v): string?<BR/>+ Password(v): string?<BR/>+ Confirm(pw, confirm): string?</TD></TR></TABLE>>];
+Ui [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FFFFFF" COLOR="#34495E"><TR><TD BGCOLOR="#EDE7F6" ALIGN="CENTER"><FONT POINT-SIZE="9">«static · Tailwind recipes»</FONT><BR/><B>Ui</B></TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ H1, H2, Card, Btn, Input … {const string}</TD></TR><HR/><TR><TD ALIGN="LEFT" BALIGN="LEFT">+ Mrow(c: Cat, done): string<BR/>+ QuestCard(c: Cat): string<BR/>+ Chip(c: Cat): string<BR/>+ CatText(c: Cat): string<BR/>+ OptCat(c: Cat, on): string<BR/>+ OptGold(on): string<BR/>+ Cost(on): string</TD></TR></TABLE>>];
+IJSRuntime [label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" BGCOLOR="#FAFAFA" COLOR="#34495E"><TR><TD BGCOLOR="#ECEFF1" ALIGN="CENTER"><FONT POINT-SIZE="9">«interface»</FONT><BR/><B>IJSRuntime</B></TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR><HR/><TR><TD ALIGN="LEFT"> </TD></TR></TABLE>>];
+  // bootstrap
+  Program -> App [arrowhead=vee, style=dashed, label="«registers root»"];
+  App -> MainLayout [arrowhead=vee, style=dashed, label="default layout"];
+  App -> Dashboard [style=invis]; 
+
+  // inheritance
+  LayoutComponentBase -> MainLayout [dir=back, arrowtail=empty];
+  LayoutComponentBase -> BlankLayout [dir=back, arrowtail=empty];
+  IDisposable -> GameState [dir=back, arrowtail=empty, style=dashed, label="implements"];
+  BlankLayout -> Auth [arrowtail=vee, dir=back, style=dashed, label="@layout"];
+
+  // pages -> services (DI)
+  Dashboard -> GameState [arrowhead=vee, style=dashed, color="#2E7D32"];
+  NewMission -> GameState [arrowhead=vee, style=dashed, color="#2E7D32"];
+  Shop -> GameState [arrowhead=vee, style=dashed, color="#2E7D32"];
+  Inventory -> GameState [arrowhead=vee, style=dashed, color="#2E7D32"];
+  Missions -> GameState [arrowhead=vee, style=dashed, color="#2E7D32"];
+  Auth -> GameState [arrowhead=vee, style=dashed, color="#2E7D32", label="StartFresh()"];
+  Auth -> AuthService [arrowhead=vee, style=dashed, color="#2E7D32"];
+  Auth -> AuthRules [arrowhead=vee, style=dashed, color="#2E7D32", label="validates"];
+  MainLayout -> GameState [arrowhead=vee, style=dashed, color="#2E7D32", label="Changed"];
+  MainLayout -> AuthService [arrowhead=vee, style=dashed, color="#2E7D32", label="Changed"];
+  NewMission -> Mission [arrowhead=vee, style=dashed, label="«creates»"];
+
+  // domain
+  GameState -> Mission [arrowtail=diamond, dir=both, arrowhead=vee, label="Missions  0..*", headlabel=""];
+  GameState -> ShopItem [arrowtail=diamond, dir=both, arrowhead=vee, label="Shop  0..*"];
+  GameState -> Consumable [arrowtail=diamond, dir=both, arrowhead=vee, label="Items  0..*"];
+  Mission -> Cat [arrowhead=vee, label="Cat"];
+  AuthService -> UserAccount [arrowtail=odiamond, dir=both, arrowhead=vee, label="_users  0..*\nCurrent  0..1"];
+  AuthService -> AuthResult [arrowhead=vee, style=dashed, label="«returns»"];
+  AuthService -> AuthRules [arrowhead=vee, style=dashed, label="«uses»"];
+  AuthService -> IJSRuntime [arrowhead=vee, label="_js"];
+  Ui -> Cat [arrowhead=vee, style=dashed, label="«uses»"];
+
+  // note
+  Note [shape=note, style=filled, fillcolor="#FFFDE7", color="#B8A800", fontsize=10,
+        label="All pages and MainLayout also use the static Ui class\nfor Tailwind class strings (edges omitted for clarity)."];
+  Note -> Ui [style=dotted, arrowhead=none];
+
+
+  SeedMission [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3" COLOR="#8D6E63" BGCOLOR="#FFF8E1"><TR><TD COLSPAN="8" BGCOLOR="#FFE0B2"><B>Initial Mission instances (4 of 7 shown)</B></TD></TR><TR><TD BGCOLOR="#FFF3E0"><B>Id</B></TD><TD BGCOLOR="#FFF3E0"><B>Name</B></TD><TD BGCOLOR="#FFF3E0"><B>Cat</B></TD><TD BGCOLOR="#FFF3E0"><B>Heavy</B></TD><TD BGCOLOR="#FFF3E0"><B>Cost</B></TD><TD BGCOLOR="#FFF3E0"><B>Claimed</B></TD><TD BGCOLOR="#FFF3E0"><B>Exp</B></TD><TD BGCOLOR="#FFF3E0"><B>Gold</B></TD></TR><TR><TD ALIGN="LEFT">1</TD><TD ALIGN="LEFT">Morning Study Session</TD><TD ALIGN="LEFT">Academic</TD><TD ALIGN="LEFT">false</TD><TD ALIGN="LEFT">30</TD><TD ALIGN="LEFT">true</TD><TD ALIGN="LEFT">45</TD><TD ALIGN="LEFT">22</TD></TR><TR><TD ALIGN="LEFT">2</TD><TD ALIGN="LEFT">Creative Writing Block</TD><TD ALIGN="LEFT">Creative</TD><TD ALIGN="LEFT">false</TD><TD ALIGN="LEFT">20</TD><TD ALIGN="LEFT">false</TD><TD ALIGN="LEFT">30</TD><TD ALIGN="LEFT">15</TD></TR><TR><TD ALIGN="LEFT">3</TD><TD ALIGN="LEFT">Morning Run — 5km</TD><TD ALIGN="LEFT">Physical</TD><TD ALIGN="LEFT">false</TD><TD ALIGN="LEFT">25</TD><TD ALIGN="LEFT">false</TD><TD ALIGN="LEFT">37</TD><TD ALIGN="LEFT">18</TD></TR><TR><TD ALIGN="LEFT">5</TD><TD ALIGN="LEFT">Complete Thesis Chapter III</TD><TD ALIGN="LEFT">Academic</TD><TD ALIGN="LEFT">true</TD><TD ALIGN="LEFT">80</TD><TD ALIGN="LEFT">false</TD><TD ALIGN="LEFT">200</TD><TD ALIGN="LEFT">100</TD></TR></TABLE>>];
+  SeedShop [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3" COLOR="#8D6E63" BGCOLOR="#FFF8E1"><TR><TD COLSPAN="3" BGCOLOR="#FFE0B2"><B>Initial ShopItem instances (3 of 8 shown)</B></TD></TR><TR><TD BGCOLOR="#FFF3E0"><B>Name</B></TD><TD BGCOLOR="#FFF3E0"><B>Desc</B></TD><TD BGCOLOR="#FFF3E0"><B>Price</B></TD></TR><TR><TD ALIGN="LEFT">New Steam Game</TD><TD ALIGN="LEFT">Any game on your wishlist…</TD><TD ALIGN="LEFT">800</TD></TR><TR><TD ALIGN="LEFT">Guilt-Free Day Off</TD><TD ALIGN="LEFT">One full day of complete freedom…</TD><TD ALIGN="LEFT">1200</TD></TR><TR><TD ALIGN="LEFT">Restaurant Dinner</TD><TD ALIGN="LEFT">Dinner at any restaurant…</TD><TD ALIGN="LEFT">600</TD></TR></TABLE>>];
+  SeedCons [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3" COLOR="#8D6E63" BGCOLOR="#FFF8E1"><TR><TD COLSPAN="4" BGCOLOR="#FFE0B2"><B>Initial Consumable instances (2 of 2)</B></TD></TR><TR><TD BGCOLOR="#FFF3E0"><B>Name</B></TD><TD BGCOLOR="#FFF3E0"><B>Qty</B></TD><TD BGCOLOR="#FFF3E0"><B>Energy</B></TD><TD BGCOLOR="#FFF3E0"><B>Risk</B></TD></TR><TR><TD ALIGN="LEFT">Kopiko Lucky Day</TD><TD ALIGN="LEFT">3</TD><TD ALIGN="LEFT">+60</TD><TD ALIGN="LEFT">null</TD></TR><TR><TD ALIGN="LEFT">Cobra Energy Drink</TD><TD ALIGN="LEFT">1</TD><TD ALIGN="LEFT">+100</TD><TD ALIGN="LEFT">4-hour caffeine crash debuff</TD></TR></TABLE>>];
+  SeedGS [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="3" COLOR="#8D6E63" BGCOLOR="#FFF8E1"><TR><TD COLSPAN="2" BGCOLOR="#FFE0B2"><B>Initial GameState values</B></TD></TR><TR><TD BGCOLOR="#FFF3E0"><B>Field</B></TD><TD BGCOLOR="#FFF3E0"><B>Value</B></TD></TR><TR><TD ALIGN="LEFT">Energy</TD><TD ALIGN="LEFT">185 / 240</TD></TR><TR><TD ALIGN="LEFT">Level</TD><TD ALIGN="LEFT">7</TD></TR><TR><TD ALIGN="LEFT">Exp</TD><TD ALIGN="LEFT">340 / 500</TD></TR><TR><TD ALIGN="LEFT">Gold</TD><TD ALIGN="LEFT">1240</TD></TR><TR><TD ALIGN="LEFT">RegenLeft</TD><TD ALIGN="LEFT">272 s</TD></TR><TR><TD ALIGN="LEFT">CrashUntil</TD><TD ALIGN="LEFT">null</TD></TR></TABLE>>];
+  SeedNote [shape=note, style=filled, fillcolor="#FFFDE7", color="#B8A800", fontsize=10,
+     label="Seed data hard-coded in GameState.\nExp = (int)(Cost × 1.5 daily | 2.5 heavy)\nGold = (int)(Cost × 0.75 daily | 1.25 heavy)\nRegisterAsync → StartFresh() resets a new account\nto Level 1, 240/240 Energy, 0 Gold, no missions."];
+  SeedMission -> Mission [style=dotted, arrowhead=vee, label="«instances»"];
+  SeedShop -> ShopItem [style=dotted, arrowhead=vee, label="«instances»"];
+  SeedCons -> Consumable [style=dotted, arrowhead=vee, label="«instances»"];
+  SeedGS -> GameState [style=dotted, arrowhead=vee, label="«initial state»"];
+  SeedNote -> SeedGS [style=dotted, arrowhead=none];
+
+  // legend
+  Legend [shape=plain, label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="3" COLOR="#999999">
+    <TR><TD ALIGN="LEFT"><B>Legend</B></TD></TR>
+    <TR><TD ALIGN="LEFT" BGCOLOR="#DDEFE0">  Page components (Pages/)  </TD></TR>
+    <TR><TD ALIGN="LEFT" BGCOLOR="#FFF3CD">  Layouts (Layout/)  </TD></TR>
+    <TR><TD ALIGN="LEFT" BGCOLOR="#DCE8FB">  Services &amp; models (Services/)  </TD></TR>
+    <TR><TD ALIGN="LEFT" BGCOLOR="#EDE7F6">  Shared helpers  </TD></TR>
+    <TR><TD ALIGN="LEFT" BGCOLOR="#F3E5F5">  Bootstrap  </TD></TR>
+    <TR><TD ALIGN="LEFT">  ◆→ composition   ◇→ aggregation   ▷ inheritance/realization  </TD></TR>
+    <TR><TD ALIGN="LEFT">  - - ▸ dependency / injected service  </TD></TR></TABLE>>];
+
+  {rank=same; Program; App;}
+  {rank=same; BlankLayout; MainLayout;}
+  {rank=same; Dashboard; NewMission; Shop; Inventory; Missions; Auth;}
+  {rank=same; Note; Legend;}
+  {rank=same; Mission; Ui;}
+  {rank=same; SeedMission; SeedShop; SeedCons;}
+}
