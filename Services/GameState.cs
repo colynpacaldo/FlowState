@@ -1,16 +1,6 @@
+using FlowState.Models;
+
 namespace FlowState.Services;
-
-public enum Cat { Academic, Creative, Physical }
-
-public class Mission
-{
-    public int Id; public string Name = ""; public Cat Cat; public bool Heavy; public int Cost;
-    public bool Claimed;
-    public int Exp => (int)(Cost * (Heavy ? 2.5 : 1.5));
-    public int Gold => (int)(Cost * (Heavy ? 1.25 : 0.75));
-}
-public record ShopItem(string Icon, string Name, string Desc, int Price);
-public class Consumable { public string Name = "", Desc = ""; public int Qty, Energy; public string? Risk; }
 
 public class GameState : IDisposable
 {
