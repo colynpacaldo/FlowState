@@ -433,3 +433,6 @@ node_modules/
 
 # Build output
 [Bb]in/
+
+# This file  
+wwwroot/css/app.css
