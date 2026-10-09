@@ -3,12 +3,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using FlowState.Models;
 using Microsoft.JSInterop;
 
 namespace FlowState.Services;
-
-public record UserAccount(string Username, string Email, string Salt, string Hash);
-public record AuthResult(bool Ok, string? Error = null);
 
 /// <summary>Pure validation rules, kept separate so they are easy to unit test.</summary>
 public static class AuthRules
