@@ -2,8 +2,6 @@ using FlowState.Models;
 
 namespace FlowState.Services;
 
-public class Consumable { public string Name = "", Desc = ""; public int Qty, Energy; public string? Risk; }
-
 public class GameState : IDisposable
 {
     public const int MaxEnergy = 240, ExpNeeded = 500, RegenSeconds = 300;
