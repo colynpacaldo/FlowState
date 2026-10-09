@@ -1,6 +1,6 @@
-namespace FlowState.Services;
+using FlowState.Models;
 
-public enum Cat { Academic, Creative, Physical }
+namespace FlowState.Services;
 
 public class Mission
 {

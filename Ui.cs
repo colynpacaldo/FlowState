@@ -1,3 +1,4 @@
+using FlowState.Models;
 using FlowState.Services;
 
 namespace FlowState;
