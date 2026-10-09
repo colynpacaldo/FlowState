@@ -2,7 +2,6 @@ using FlowState.Models;
 
 namespace FlowState.Services;
 
-public record ShopItem(string Icon, string Name, string Desc, int Price);
 public class Consumable { public string Name = "", Desc = ""; public int Qty, Energy; public string? Risk; }
 
 public class GameState : IDisposable
